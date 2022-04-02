@@ -11,58 +11,25 @@ namespace SimplyInventoryTest.Repositories
 {
     public class InventoryRepository
     {
-
 		public static List<Inventory> SearchInventory(string searchData)
 		{	
-			string sqlQuery = "SELECT * FROM Inventory WHERE InventoryID != 0 ";
+			string sqlQuery = @"SELECT * FROM Inventory WHERE InventoryID != 0 ";
 
 			if (!string.IsNullOrWhiteSpace(searchData))
             {
-				sqlQuery += @" AND CategoryName LIKE @CategoryName AND DescriptionName LIKE @DescriptionName;";
-				searchData = "%" + searchData + "%";
+				sqlQuery += $" AND CategoryName LIKE '%{searchData}%' OR DescriptionName LIKE '%{searchData}%';";
 			}
 
 			List<Inventory> result;
-			Debug.Print(sqlQuery);
 
 			using (SQLiteConnection connection = Database.GetConnection())
 			{
-				//result = connection.Query<Inventory>(sqlQuery, null, null, true, null, null).ToList<Inventory>();
 				result = connection.Query<Inventory>(sqlQuery, new
-				{
-					CategoryName = searchData,
-					DescriptionName = searchData
-				}, null, true, null, null).ToList<Inventory>();
+				{ CategoryName = searchData, DescriptionName = searchData }, 
+				null, true, null, null).ToList();
 			}
 			return result;	
 		}
-		/*public static List<Inventory> SearchInventory(string category = null, string description = null)
-		{
-			string text = "SELECT * FROM Inventory WHERE InventoryID != 0 ";
-
-			if (!string.IsNullOrWhiteSpace(category))
-			{
-				text += " AND CategoryName LIKE @categoryName ";
-				category = "%" + category + "%";
-			}
-			if (!string.IsNullOrWhiteSpace(description))
-			{
-				text += " AND DescriptionName LIKE @descriptionName ";
-				description = "%" + description + "%";
-			}
-
-			List<Inventory> result;
-			using (SQLiteConnection connection = Database.GetConnection())
-			{
-				result = connection.Query<Inventory>(text, new
-				{
-					categoryName = category,
-					descriptionName = description
-				}, null, true, null, null).ToList<Inventory>();
-			}
-			return result;
-		}
-*/
 		public static List<Inventory> GetAllInventory()
 		{
 			List<Inventory> result;
@@ -74,7 +41,6 @@ namespace SimplyInventoryTest.Repositories
 			}
 			return result;
 		}
-
 		public static List<Inventory> GetAllInventoryByDescription()
 		{
 			List<Inventory> result;
@@ -86,7 +52,6 @@ namespace SimplyInventoryTest.Repositories
 			}
 			return result;
 		}
-
 		public static void SaveItem(Inventory inventory, IDbTransaction trans = null)
 		{
 			using (SQLiteConnection connection = Database.GetConnection())
