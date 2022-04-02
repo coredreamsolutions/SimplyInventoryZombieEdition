@@ -60,12 +60,12 @@ namespace SimplyInventoryTest.Presentation
             if (settings.ShowStoreLogo)
             {
                 AppLogo.Visible = false;
-                StoreLogo.Visible = true;
+            //    StoreLogo.Visible = true;
             } 
             else
             {
                 AppLogo.Visible = true;
-                StoreLogo.Visible = false;
+             //   StoreLogo.Visible = false;
             }
         }
 
@@ -115,13 +115,11 @@ namespace SimplyInventoryTest.Presentation
 
         private void ClearQuery_Click(object sender, EventArgs e)
         {
-            SearchItem.Text = string.Empty;
-            SearchCategory.Text = string.Empty;
-            //List<Inventory> dataSource = InventoryRepository.SearchInventory(SearchCategory.Text, SearchItem.Text);
+            SearchData.Clear();
             List<Inventory> dataSource = InventoryRepository.SearchInventory(SearchData.Text);
             BindingSource bindingSource = new BindingSource();
             bindingSource.DataSource = dataSource;
-            this.InventoryGrid.DataSource = dataSource;
+            InventoryGrid.DataSource = dataSource;
         }
 
         private void ManualMailer_Click(object sender, EventArgs e)
@@ -151,9 +149,6 @@ namespace SimplyInventoryTest.Presentation
                     File.Delete(AppDomain.CurrentDomain.BaseDirectory + "Invlist.xlsx");
                 }
                 MessageBox.Show("E-Mail has been sent.", "Response", MessageBoxButtons.OK);
-                this.SearchItem.Text = string.Empty;
-                this.SearchCategory.Text = string.Empty;
-                //List<Inventory> dataSource = InventoryRepository.SearchInventory(this.SearchCategory.Text, this.SearchItem.Text);
                 List<Inventory> dataSource = InventoryRepository.SearchInventory(SearchData.Text);
                 BindingSource bindingSource = new BindingSource();
                 bindingSource.DataSource = dataSource;
@@ -290,6 +285,11 @@ namespace SimplyInventoryTest.Presentation
             }
 
             UpdateDataGrid();
+        }
+
+        private void SearchData_TextChanged(object sender, EventArgs e)
+        {
+            SearchForData();
         }
     }
 }
